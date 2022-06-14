@@ -1,9 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Timeline">
+    tools:context=".Timeline"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="#00FFFFFF">
+        <ImageView
+            android:layout_width="100dp"
+            android:contentDescription="twitter_logo"
+            android:layout_height="40dp"
+            android:layout_gravity="left"
+            android:src="@drawable/nav_logo_whiteout"
+            android:paddingLeft="10dp"
+            />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="35dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="15dp"
+            android:contentDescription="Navigate to Messages"
+            android:src="@drawable/nav_inbox_paper_plane" />
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="122dp"
+        android:layout_height="47dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="268dp"
+        android:layout_marginTop="564dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="64dp"
+        android:text="Log out" />
+
+
+</RelativeLayout>

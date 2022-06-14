@@ -20,7 +20,9 @@
 
         <activity
             android:name=".Timeline"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+           />
         <activity
             android:name=".SplashScreenActivity"
             android:exported="true"
