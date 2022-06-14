@@ -37,6 +37,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     //Parse sdk
-    implementation "com.github.parse-community.Parse-SDK-Android:parse:1.18.5"
+    implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.24.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1' // for logging API calls to LogCat
 
 }
