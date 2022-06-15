@@ -48,7 +48,15 @@ public class LoginActivity extends AppCompatActivity {
                 //collect the inputted text from the input fields
                 String username = editTextUsername.getText().toString();
                 String password = editTextPassword.getText().toString();
-                loginUser(username, password);
+                if(username.isEmpty()){
+                    Toast.makeText(LoginActivity.this, "Please enter your username", Toast.LENGTH_SHORT).show();
+                }
+                else if(password.isEmpty()){
+                    Toast.makeText(LoginActivity.this, "please enter your password", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    loginUser(username, password);
+                }
 
             }
         });
@@ -62,7 +70,15 @@ public class LoginActivity extends AppCompatActivity {
                 //collect the inputted text from the input fields
                 String username = editTextUsername.getText().toString();
                 String password = editTextPassword.getText().toString();
-                signupUser(username, password);
+                if(username.isEmpty()){
+                    Toast.makeText(LoginActivity.this, "Cannot have empty username", Toast.LENGTH_SHORT).show();
+                }
+                else if(password.isEmpty()){
+                    Toast.makeText(LoginActivity.this, "Cannot have empty password", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    signupUser(username, password);
+                }
 
 
             }
@@ -118,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void goToTimeline(){
-        Intent i = new Intent(LoginActivity.this, Timeline.class);
+        Intent i = new Intent(LoginActivity.this, TimelineActivity.class);
         startActivity(i);
     }
 }
