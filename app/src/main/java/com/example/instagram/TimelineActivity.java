@@ -13,16 +13,19 @@ import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity {
 
-    public static final String TAG = "TimelineActivity";
+    private static final String TAG = "TimelineActivity";
 
-    Button btnPost;
-    BottomNavigationView bottomNavigationView;
+    private Button btnPost;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +74,28 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
-        //bottom navigation item reselected listener
-
+        queryPosts();
 
     }
 
+    public void queryPosts(){
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.include(Post.USER_KEY);
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if(e != null){
+                    Log.e(TAG, "error querying posts");
+                    return;
+                }
+                for(Post post: posts){
+                    Log.i(TAG, "Post description: " + post.getDescription() + ", Username: " + post.getUser().getUsername());
+                }
+
+            }
+        });
+
+    }
 
     private void checkifActivityCurrent(String className){
         //Using the activity manager to check what the current active activity is
