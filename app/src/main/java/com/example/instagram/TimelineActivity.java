@@ -2,6 +2,9 @@ package com.example.instagram;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.ActivityManager;
 import android.content.Intent;
@@ -10,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -18,38 +22,41 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity {
 
     private static final String TAG = "TimelineActivity";
-
-    private Button btnPost;
     private BottomNavigationView bottomNavigationView;
+    private RecyclerView postsRecyclerView;
+    protected PostsAdapter postsAdapter;
+    protected List<Post> posts;
+    private SwipeRefreshLayout swipeContainer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
+        //getting reference to recycler view that will be populated by post items
+        postsRecyclerView = findViewById(R.id.rvPosts);
+        //initializing posts array and adapter
+        posts = new ArrayList<>();
+        postsAdapter = new PostsAdapter(this, posts);
+        // set the adapter on the recycler view
+        postsRecyclerView.setAdapter(postsAdapter);
+        // set the layout manager on the recycler view
+        postsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // query posts from Parstagram
+        queryPosts();
+
+
         //getting reference to bottom navigation view
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-
-
-        //getting reference to the Post button and defining its onClick listener
-        btnPost = (Button) findViewById(R.id.btnPost);
-        btnPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //navigating to the Post activity where user can submit a post
-                Intent i = new Intent(TimelineActivity.this, PostActivity.class);
-                startActivity(i);
-            }
-        });
-
         //setting the selected item for the nav bar
         bottomNavigationView.setSelectedItemId(R.id.miHome);
-
         //bottom navigation view item listener
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -74,42 +81,57 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
-        queryPosts();
-
-    }
-
-    public void queryPosts(){
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.include(Post.USER_KEY);
-        query.findInBackground(new FindCallback<Post>() {
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void done(List<Post> posts, ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "error querying posts");
-                    return;
-                }
-                for(Post post: posts){
-                    Log.i(TAG, "Post description: " + post.getDescription() + ", Username: " + post.getUser().getUsername());
-                }
+            public void onRefresh() {
+                postsAdapter.clear();
+                queryPosts();
+                swipeContainer.setRefreshing(false);
 
             }
         });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_orange_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_orange_dark);
 
     }
 
-    private void checkifActivityCurrent(String className){
-        //Using the activity manager to check what the current active activity is
-        ActivityManager mngr = (ActivityManager) getSystemService( ACTIVITY_SERVICE );
-        List<ActivityManager.RunningTaskInfo> taskList = mngr.getRunningTasks(10);
-        if(taskList.get(0).numActivities == 1 || taskList.get(0).topActivity.getClassName().equals(this.getClass().getName())) {
-            Log.i(TAG, "This is last activity in the stack");
-            //do nothing, maybe add a stretch feature to refresh the timeline
-        }
-        else{
-            Intent i = new Intent(TimelineActivity.this, PostActivity.class);
-            startActivity(i);
-            finish(); //to keep the running activity stack small
-        }
+
+    public void queryPosts(){
+        // specify what type of data we want to query - Post.class
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        // include data referred by user key
+        query.include(Post.USER_KEY);
+        // limit query to latest 20 items
+        query.setLimit(20);
+        // order posts by creation date (newest first)
+        query.addDescendingOrder("createdAt");
+        // start an asynchronous call for posts
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> postsFound, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+
+                // for debugging purposes let's print every post description to logcat
+                for (Post post : posts) {
+                    System.out.println("post");
+                    Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
+                }
+
+                // save received posts to list and notify adapter of new data
+                posts.addAll(postsFound);
+                postsAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 }
 

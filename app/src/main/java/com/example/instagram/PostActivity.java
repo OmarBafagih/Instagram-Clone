@@ -101,7 +101,7 @@ public class PostActivity extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String description = editTextPostDescription.toString();
+                String description = editTextPostDescription.getText().toString();
                 if (description.isEmpty()) {
                     Toast.makeText(PostActivity.this, "Please enter a description for your post", Toast.LENGTH_SHORT).show();
                     return;
@@ -135,6 +135,7 @@ public class PostActivity extends AppCompatActivity {
                     return;
                 }
                 Log.i(TAG, "Post was saved to database successfully");
+                Toast.makeText(PostActivity.this, "Your post is up now!", Toast.LENGTH_SHORT).show();
                 editTextPostDescription.setText("");
                 imageViewPostImage.setImageResource(0);
             }
