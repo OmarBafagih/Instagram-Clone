@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void goToTimeline(){
-        Intent i = new Intent(LoginActivity.this, TimelineActivity.class);
+        Intent i = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(i);
     }
 }

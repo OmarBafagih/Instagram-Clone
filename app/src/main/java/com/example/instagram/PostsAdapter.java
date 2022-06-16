@@ -111,7 +111,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     intent.putExtra("user", post.getUser().getUsername());
                     intent.putExtra("relativeTime", datePostedString);
                     context.startActivity(intent);
-                   // overridePendingTransition(0,0);
+                    // overridePendingTransition(0,0);
                 }
             });
 

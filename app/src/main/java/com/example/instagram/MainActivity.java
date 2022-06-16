@@ -2,11 +2,11 @@ package com.example.instagram;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.example.instagram.fragments.FeedFragment;
 import com.example.instagram.fragments.PostFragment;
@@ -14,36 +14,34 @@ import com.example.instagram.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class PostDetails extends AppCompatActivity {
+import java.util.List;
 
+public class MainActivity extends AppCompatActivity {
 
-
+    private static final String TAG = "TimelineActivity";
     private BottomNavigationView bottomNavigationView;
-    private String postDescription, postUsername, timePosted;
-    private TextView relativeTimeAgoTextView, descriptionTextView, usernameTextView;
+    private RecyclerView postsRecyclerView;
+    protected PostsAdapter postsAdapter;
+    protected List<Post> posts;
+    private SwipeRefreshLayout swipeContainer;
     private FeedFragment feedFragment;
     private PostFragment postFragment;
     private ProfileFragment profileFragment;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_details);
+        setContentView(R.layout.activity_main);
 
         //initializing fragments for use with the bottom navigation bar
         feedFragment = new FeedFragment();
         postFragment = new PostFragment();
         profileFragment = new ProfileFragment();
 
-        postDescription = getIntent().getStringExtra("description");
-        postUsername = getIntent().getStringExtra("user");
-        timePosted = getIntent().getStringExtra("relativeTime");
-
-
         //getting reference to bottom navigation view
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        //setting the selected item for the nav bar
-        bottomNavigationView.getMenu().setGroupCheckable(0, false, true);
+
         //bottom navigation view item listener
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -51,36 +49,23 @@ public class PostDetails extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.miHome:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, feedFragment).commit();
-                        finish();
                         return true;
                     case R.id.miPost:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, postFragment).commit();
-                        finish();
                         return true;
                     case R.id.miProfile:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, profileFragment).commit();
-                        finish();
                         return true;
                 }
-
                 return false;
             }
         });
 
-        //initializing text views and populating with post details
-        usernameTextView = (TextView) findViewById(R.id.tvPostDetailsUser);
-        relativeTimeAgoTextView = (TextView) findViewById(R.id.tvPostDetailsRelativeTime);
-        descriptionTextView = (TextView) findViewById(R.id.tvPostDetailsDescription);
-
-        usernameTextView.setText("Posted by: " + postUsername);
-        descriptionTextView.setText("Caption: " + postDescription);
-        relativeTimeAgoTextView.setText("Posted: " + timePosted + " ago");
-
-
-
-
+        //setting the selected item for the nav bar as defaulting to the "home" page
+        bottomNavigationView.setSelectedItemId(R.id.miHome);
 
 
 
     }
 }
+

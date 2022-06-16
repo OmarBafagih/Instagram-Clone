@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.PostFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".PostActivity">
+
+
+        <EditText
+            android:id="@+id/editTextDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="10dp"
+            android:ems="10"
+            android:hint="Description..."
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/btnTakePicture"
+            android:layout_width="342dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextDescription"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="37dp"
+            android:layout_marginEnd="35dp"
+            android:text="Take Picture" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="342dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="38dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="59dp"
+            android:text="Submit Post" />
+
+        <ImageView
+            android:id="@+id/imageViewPostImage"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_above="@+id/btnSubmit"
+            android:layout_below="@+id/btnTakePicture"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="39dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="38dp"
+            android:layout_marginBottom="32dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
+
+    </RelativeLayout>
+
+</FrameLayout>
