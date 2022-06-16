@@ -65,7 +65,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView usernameTextView, descriptionTextView, timePostedTextView;
+        private TextView usernameTextView, descriptionTextView, timePostedTextView, usernameTextViewInDetails;
         private ImageView contentImageView, postDetailsImageView;
         private Date datePosted;
         private String datePostedString;
@@ -77,7 +77,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             descriptionTextView = itemView.findViewById(R.id.tvDescription);
             postDetailsImageView = itemView.findViewById(R.id.ivPostDetails);
             timePostedTextView = itemView.findViewById(R.id.tvRelativeTimeAgo);
-
+            usernameTextViewInDetails = itemView.findViewById(R.id.tvPostUser);
 
         }
 
@@ -87,6 +87,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             datePostedString = calculateTimeAgo(datePosted);
 
             //set the values for the views
+            usernameTextViewInDetails.setText(post.getUser().getUsername());
             descriptionTextView.setText(post.getDescription());
             usernameTextView.setText(post.getUser().getUsername());
             ParseFile image = post.getImage();
@@ -99,6 +100,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             }
 
             timePostedTextView.setText(datePostedString + " ago");
+
 
             //setting onClick listener for the image, if the user clicks on the image, then we'll take them to the Post details activity
             postDetailsImageView.setOnClickListener(new View.OnClickListener() {
