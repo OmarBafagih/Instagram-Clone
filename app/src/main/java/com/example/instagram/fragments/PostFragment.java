@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.instagram.Post;
@@ -41,8 +42,9 @@ public class PostFragment extends Fragment {
 
     private BottomNavigationView bottomNavigationView;
     private Button btnSubmit, btnTakePicture;
-    ImageView imageViewPostImage;
+    private ImageView imageViewPostImage;
     private EditText editTextPostDescription;
+    private ProgressBar progressBar;
 
     File photoFile;
     String photoFileName = "photo.jpg";
@@ -62,6 +64,7 @@ public class PostFragment extends Fragment {
         btnTakePicture = view.findViewById(R.id.btnTakePicture);
         btnSubmit = view.findViewById(R.id.btnSubmit);
         editTextPostDescription = view.findViewById(R.id.editTextDescription);
+        progressBar = view.findViewById(R.id.progressBar);
 
 
         //onClick listener for TakePicture button
@@ -78,6 +81,7 @@ public class PostFragment extends Fragment {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String description = editTextPostDescription.getText().toString();
                 if (description.isEmpty()) {
                     Toast.makeText(getContext(), "Please enter a description for your post", Toast.LENGTH_SHORT).show();
@@ -87,6 +91,10 @@ public class PostFragment extends Fragment {
                     Toast.makeText(getContext(), "Error loading photo", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //setting submit button visibility to gone so that there is no possibility for multiple of the same requests (if user clicks submit multiple times)
+                btnSubmit.setVisibility(View.GONE);
+                //setting visibility for progress bar
+                progressBar.setVisibility(View.VISIBLE);
                 ParseUser currentUser = ParseUser.getCurrentUser();
                 savePost(description, currentUser, photoFile);
             }
@@ -117,6 +125,7 @@ public class PostFragment extends Fragment {
                 Toast.makeText(getContext(), "Your post is up now!", Toast.LENGTH_SHORT).show();
                 editTextPostDescription.setText("");
                 imageViewPostImage.setImageResource(0);
+                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -165,6 +174,7 @@ public class PostFragment extends Fragment {
                 imageViewPostImage = (ImageView) getActivity().findViewById(R.id.imageViewPostImage);
                 imageViewPostImage.setImageBitmap(takenImage);
                 Log.i(TAG, "image set");
+                btnSubmit.setVisibility(View.VISIBLE);
 
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
