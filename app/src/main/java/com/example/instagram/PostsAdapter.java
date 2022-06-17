@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.example.instagram.fragments.ProfileFragment;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
@@ -106,12 +107,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             postDetailsImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int position = getAdapterPosition();
+
+                    Post post = posts.get(position);
+
                     Intent intent = new Intent(context, PostDetails.class);
-                    intent.putExtra("description", post.getDescription());
-                    intent.putExtra("user", post.getUser().getUsername());
-                    intent.putExtra("relativeTime", datePostedString);
+                    intent.putExtra("post", Parcels.wrap(post));
+                   // intent.putExtra("user", post.getUser().getUsername());
+                  //  intent.putExtra("relativeTime", datePostedString);
                     context.startActivity(intent);
-                    // overridePendingTransition(0,0);
                 }
             });
 

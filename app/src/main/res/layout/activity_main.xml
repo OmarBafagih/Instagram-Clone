@@ -23,13 +23,17 @@
             android:paddingLeft="10dp"
             />
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="35dp"
+        <TextView
+            android:id="@+id/tvLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginEnd="15dp"
-            android:contentDescription="Navigate to Messages"
-            android:src="@drawable/nav_inbox_paper_plane" />
+            android:text="LOG OUT"
+            android:layout_marginEnd="20dp"
+            android:textStyle="bold"
+            android:textSize="16sp">
+
+        </TextView>
     </androidx.appcompat.widget.Toolbar>
 
 

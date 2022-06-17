@@ -7,21 +7,58 @@
     tools:context=".fragments.ProfileFragment">
 
     <RelativeLayout
+        android:id="@+id/rlProfile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="wrap_content"
-            android:layout_height="51dp"
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp">
+
+            <ImageView
+                android:id="@+id/ivUserProfilePhoto"
+                android:layout_width="40dp"
+                android:layout_height="16dp"
+                android:layout_above="@+id/tvUserProfileUsername"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="178dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="194dp"
+                android:layout_marginBottom="27dp"></ImageView>
+
+            <TextView
+                android:id="@+id/tvUserProfileUsername"
+                android:layout_width="84dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="170dp"
+                android:layout_marginBottom="12dp"
+                android:textStyle="bold"></TextView>
+
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvUserPosts"
+            android:layout_width="256dp"
+            android:layout_height="573dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="102dp"
-            android:text="Log out" />
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp" />
 
 
     </RelativeLayout>

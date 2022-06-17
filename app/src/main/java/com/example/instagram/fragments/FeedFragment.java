@@ -95,6 +95,7 @@ public class FeedFragment extends Fragment {
         query.setLimit(20);
         // order posts by creation date (newest first)
         query.addDescendingOrder("createdAt");
+
         // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Post>() {
             @Override

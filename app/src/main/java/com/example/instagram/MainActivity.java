@@ -5,14 +5,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.instagram.fragments.FeedFragment;
 import com.example.instagram.fragments.PostFragment;
 import com.example.instagram.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.parse.ParseUser;
 
 import java.util.List;
 
@@ -27,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private FeedFragment feedFragment;
     private PostFragment postFragment;
     private ProfileFragment profileFragment;
+    private TextView logoutTextView;
 
 
     @Override
@@ -63,6 +69,18 @@ public class MainActivity extends AppCompatActivity {
 
         //setting the selected item for the nav bar as defaulting to the "home" page
         bottomNavigationView.setSelectedItemId(R.id.miHome);
+
+
+        //getting reference to log out button and defining its onClick listener
+        logoutTextView = findViewById(R.id.tvLogout);
+        logoutTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOut();
+                ParseUser currentUser = ParseUser.getCurrentUser();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
 
 
 
