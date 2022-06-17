@@ -26,9 +26,14 @@ import com.bumptech.glide.manager.SupportRequestManagerFragment;
 import com.example.instagram.fragments.FeedFragment;
 import com.example.instagram.fragments.PostFragment;
 import com.example.instagram.fragments.ProfileFragment;
+import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.util.Date;
@@ -39,6 +44,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
     private Context context;
     private List<Post> posts;
+    private static final String TAG = "PostsAdapter";
 
 
     public PostsAdapter(Context context, List<Post> posts) {
@@ -80,7 +86,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView usernameTextView, descriptionTextView, timePostedTextView, usernameTextViewInDetails, commentsTextView;
+        private TextView usernameTextView, descriptionTextView, timePostedTextView, usernameTextViewInDetails, commentsTextView, likeCountTextView;
         private ImageView contentImageView, postDetailsImageView, userProfileImageView, likeImageView, commentsImageView;
         private Date datePosted;
         private String datePostedString;
@@ -99,7 +105,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             likeImageView = itemView.findViewById(R.id.ivLike);
             commentsImageView = itemView.findViewById(R.id.ivComment);
             commentsTextView = itemView.findViewById(R.id.tvComments);
-
+            likeCountTextView = itemView.findViewById(R.id.tvLikeCount);
 
 
 
@@ -132,11 +138,25 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     int radius = 60;
                     Glide.with(context)
                             .load(profilePhoto.getUrl())
-                            .transform(new RoundedCorners(radius))
+                            .circleCrop()
                             .into(userProfileImageView);
                 }
 
                 timePostedTextView.setText(datePostedString + " ago");
+
+
+                //setting view for lies, whether or not user already likes the post before
+                JSONArray likes = post.getLikes();
+                likeCountTextView.setText(Integer.toString(likes.length()));
+                for(int i = 0; i < likes.length(); i++){
+                    try {
+                        if(likes.getString(i).equals(post.getUser().getObjectId())){
+                            likeImageView.setSelected(true);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
 
 
                 //setting onClick listener for the image, if the user clicks on the image, then we'll take them to the Post details activity
@@ -158,6 +178,49 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 likeImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        if(likeImageView.isSelected()){
+                            likeImageView.setSelected(false);
+                            JSONArray likes = post.getLikes();
+                            likeCountTextView.setText(Integer.toString(likes.length()-1));
+                            for(int i = 0; i < likes.length(); i++){
+                                try {
+                                    if(likes.getString(i).equals(post.getUser().getObjectId())){
+                                        likes.remove(i);
+
+                                        post.put("likes", likes);
+                                        post.saveInBackground(new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                if(e != null){
+                                                    Log.e(TAG, "Error disliking post", e);
+                                                }
+
+                                            }
+                                        });
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        else{
+                            likeImageView.setSelected(true);
+                            likeCountTextView.setText(Integer.toString(likes.length()+1));
+                            post.addLikes(ParseUser.getCurrentUser());
+                            post.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if(e != null){
+                                        Log.e(TAG, "error liking post", e);
+                                    }
+
+                                }
+                            });
+                        }
+
+
+
 
                     }
                 });

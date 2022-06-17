@@ -98,7 +98,8 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="7dp"
                 android:layout_marginEnd="5dp"
-                android:src="@drawable/ufi_heart"></ImageView>
+                android:src="@drawable/like_config"
+                app:tint="@color/like_selector"></ImageView>
 
             <ImageView
                 android:id="@+id/ivComment"
@@ -167,22 +168,30 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/linearLayoutPostInteractions"
             android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
             android:layout_marginStart="7dp"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="330dp"
-            android:text="2 likes"
+            android:text="0"
             android:textSize="14sp"
             android:textStyle="bold"
-            tools:text="2 Likes" />
+            tools:text="0" />
+
+        <TextView
+            android:id="@+id/tvLikes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tvDescription"
+            android:layout_below="@+id/linearLayoutPostInteractions"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="254dp"
+            android:layout_marginBottom="1dp"
+            android:layout_toEndOf="@+id/tvLikeCount"
+            android:text="likes"
+            android:textStyle="bold" />
 
 
     </RelativeLayout>
-
-
-
-
-
 
 
 </LinearLayout>

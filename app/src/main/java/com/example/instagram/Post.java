@@ -5,8 +5,10 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import org.json.JSONArray;
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @ParseClassName("Post")
@@ -15,7 +17,7 @@ public class Post extends ParseObject{
     public static final String IMAGE_KEY = "image";
     public static final String DESCRIPTION_KEY = "description";
     public static final String USER_KEY = "user";
-
+    public static final String LIKE_KEY = "likes";
     //required empty constructor for parceler to work
     public Post(){}
 
@@ -26,6 +28,12 @@ public class Post extends ParseObject{
         put(DESCRIPTION_KEY, description);
     }
 
+
+    public JSONArray getLikes(){return getJSONArray(LIKE_KEY);}
+    public void addLikes(ParseUser user) {
+        add(LIKE_KEY, user.getObjectId());
+
+    }
 
 
     public ParseUser getUser(){

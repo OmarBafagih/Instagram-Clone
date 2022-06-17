@@ -73,7 +73,7 @@ public class PostDetails extends AppCompatActivity {
             int radius = 100;
             Glide.with(this)
                     .load(profilePhoto.getUrl())
-                    .transform(new RoundedCorners(radius))
+                    .circleCrop()
                     .into(profilePhotoImageView);
         }
 
