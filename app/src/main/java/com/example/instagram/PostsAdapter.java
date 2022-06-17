@@ -1,7 +1,10 @@
 package com.example.instagram;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +14,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.manager.SupportRequestManagerFragment;
+import com.example.instagram.fragments.FeedFragment;
+import com.example.instagram.fragments.PostFragment;
 import com.example.instagram.fragments.ProfileFragment;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
@@ -29,6 +40,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     private Context context;
     private List<Post> posts;
 
+
     public PostsAdapter(Context context, List<Post> posts) {
         this.context = context;
         this.posts = posts;
@@ -38,7 +50,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
+
         return new ViewHolder(view);
+
 
     }
 
@@ -66,10 +80,11 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView usernameTextView, descriptionTextView, timePostedTextView, usernameTextViewInDetails;
-        private ImageView contentImageView, postDetailsImageView;
+        private TextView usernameTextView, descriptionTextView, timePostedTextView, usernameTextViewInDetails, commentsTextView;
+        private ImageView contentImageView, postDetailsImageView, userProfileImageView, likeImageView, commentsImageView;
         private Date datePosted;
         private String datePostedString;
+        private LinearLayout linearLayoutPost;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,45 +94,114 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             postDetailsImageView = itemView.findViewById(R.id.ivPostDetails);
             timePostedTextView = itemView.findViewById(R.id.tvRelativeTimeAgo);
             usernameTextViewInDetails = itemView.findViewById(R.id.tvPostUser);
+            linearLayoutPost = itemView.findViewById(R.id.linearLayoutPost);
+            userProfileImageView = itemView.findViewById(R.id.ivPostUser);
+            likeImageView = itemView.findViewById(R.id.ivLike);
+            commentsImageView = itemView.findViewById(R.id.ivComment);
+            commentsTextView = itemView.findViewById(R.id.tvComments);
+
+
+
+
 
         }
 
         public void bind(Post post) {
 
-            datePosted = post.getCreatedAt();
-            datePostedString = calculateTimeAgo(datePosted);
+            FragmentManager manager = ((AppCompatActivity)context).getSupportFragmentManager();
+            Fragment f = manager.findFragmentById(R.id.fragment_container);
+            if(f instanceof FeedFragment){
 
-            //set the values for the views
-            usernameTextViewInDetails.setText(post.getUser().getUsername());
-            descriptionTextView.setText(post.getDescription());
-            usernameTextView.setText(post.getUser().getUsername());
-            ParseFile image = post.getImage();
-            if (image != null) {
-                int radius = 50;
-                Glide.with(context)
-                        .load(image.getUrl())
-                        .transform(new RoundedCorners(radius))
-                        .into(contentImageView);
+                datePosted = post.getCreatedAt();
+                datePostedString = calculateTimeAgo(datePosted);
+
+                //set the values for the views
+                usernameTextViewInDetails.setText(post.getUser().getUsername());
+                descriptionTextView.setText(post.getDescription());
+                usernameTextView.setText(post.getUser().getUsername());
+                ParseFile image = post.getImage();
+                if (image != null) {
+                    int radius = 50;
+                    Glide.with(context)
+                            .load(image.getUrl())
+                            .transform(new RoundedCorners(radius))
+                            .into(contentImageView);
+                }
+                ParseFile profilePhoto = ParseUser.getCurrentUser().getParseFile("profilePhoto");
+                if(profilePhoto != null){
+                    int radius = 60;
+                    Glide.with(context)
+                            .load(profilePhoto.getUrl())
+                            .transform(new RoundedCorners(radius))
+                            .into(userProfileImageView);
+                }
+
+                timePostedTextView.setText(datePostedString + " ago");
+
+
+                //setting onClick listener for the image, if the user clicks on the image, then we'll take them to the Post details activity
+                postDetailsImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = getAdapterPosition();
+
+                        Post post = posts.get(position);
+
+                        Intent intent = new Intent(context, PostDetails.class);
+                        intent.putExtra("post", Parcels.wrap(post));
+                        // intent.putExtra("user", post.getUser().getUsername());
+                        //  intent.putExtra("relativeTime", datePostedString);
+                        context.startActivity(intent);
+                    }
+                });
+
+                likeImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+
+            }
+            else{
+                System.out.println("Profile Fragment or Post Fragment");
+                ParseFile image = post.getImage();
+                if (image != null) {
+                    int radius = 50;
+                    Glide.with(context)
+                            .load(image.getUrl())
+                            .into(contentImageView);
+                }
+
+                //setting onClick listener for the image, if the user clicks on the image, then we'll take them to the Post details activity
+                linearLayoutPost.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = getAdapterPosition();
+
+                        Post post = posts.get(position);
+
+                        Intent intent = new Intent(context, PostDetails.class);
+                        intent.putExtra("post", Parcels.wrap(post));
+                        // intent.putExtra("user", post.getUser().getUsername());
+                        //  intent.putExtra("relativeTime", datePostedString);
+                        context.startActivity(intent);
+                    }
+                });
+
+                postDetailsImageView.setVisibility(View.GONE);
+                userProfileImageView.setVisibility(View.GONE);
+                likeImageView.setVisibility(View.GONE);
+                commentsImageView.setVisibility(View.GONE);
+                commentsTextView.setVisibility(View.GONE);
+
+
+
             }
 
-            timePostedTextView.setText(datePostedString + " ago");
 
 
-            //setting onClick listener for the image, if the user clicks on the image, then we'll take them to the Post details activity
-            postDetailsImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-
-                    Post post = posts.get(position);
-
-                    Intent intent = new Intent(context, PostDetails.class);
-                    intent.putExtra("post", Parcels.wrap(post));
-                   // intent.putExtra("user", post.getUser().getUsername());
-                  //  intent.putExtra("relativeTime", datePostedString);
-                    context.startActivity(intent);
-                }
-            });
 
         }
     }

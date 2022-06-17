@@ -19,6 +19,7 @@ import com.example.instagram.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
@@ -31,7 +32,7 @@ public class PostDetails extends AppCompatActivity {
 
 
     private TextView usernameTextView, descriptionTextView, timePostedTextView, usernameTextViewInDetails;
-    private ImageView contentImageView, leaveImageView;
+    private ImageView contentImageView, leaveImageView, profilePhotoImageView;
     private Date datePosted;
     private String datePostedString;
 
@@ -49,6 +50,7 @@ public class PostDetails extends AppCompatActivity {
         timePostedTextView = findViewById(R.id.tvRelativeTimeAgoDetails);
         usernameTextViewInDetails = findViewById(R.id.tvPostUserDetails);
         leaveImageView = findViewById(R.id.ivBack);
+        profilePhotoImageView = findViewById(R.id.ivPostUserDetails);
 
         datePosted = post.getCreatedAt();
         datePostedString = calculateTimeAgo(datePosted);
@@ -65,6 +67,16 @@ public class PostDetails extends AppCompatActivity {
                     .transform(new RoundedCorners(radius))
                     .into(contentImageView);
         }
+
+        ParseFile profilePhoto = ParseUser.getCurrentUser().getParseFile("profilePhoto");
+        if (image != null) {
+            int radius = 100;
+            Glide.with(this)
+                    .load(profilePhoto.getUrl())
+                    .transform(new RoundedCorners(radius))
+                    .into(profilePhotoImageView);
+        }
+
         timePostedTextView.setText(datePostedString + " ago");
 
         //onClick listener for the leaveImageView
