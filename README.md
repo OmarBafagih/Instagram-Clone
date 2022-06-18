@@ -2,7 +2,11 @@
 
 **Instagram Clone** is a photo sharing app using Parse as its backend.
 
-Time spent: **16** hours spent in total
+
+https://user-images.githubusercontent.com/71048942/174414274-46dc744a-a187-4371-bebd-b11069a7f85b.mp4
+
+
+Time spent: **31** hours spent in total
 
 ## User Stories
 
