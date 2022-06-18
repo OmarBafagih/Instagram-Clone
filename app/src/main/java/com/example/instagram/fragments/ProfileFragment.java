@@ -104,7 +104,7 @@ public class ProfileFragment extends Fragment {
             int radius = 100;
             Glide.with(this)
                     .load(image.getUrl())
-                    .transform(new RoundedCorners(radius))
+                    .circleCrop()
                     .into(profilePictureImageView);
         }
 
@@ -192,6 +192,7 @@ public class ProfileFragment extends Fragment {
         query.include(Post.USER_KEY);
         // limit query to latest 20 items
         query.setLimit(20);
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
         // order posts by creation date (newest first)
         query.addDescendingOrder("createdAt");
 

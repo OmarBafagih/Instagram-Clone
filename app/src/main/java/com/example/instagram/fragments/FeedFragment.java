@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.instagram.EndlessRecyclerViewScrollListener;
 import com.example.instagram.Post;
 import com.example.instagram.PostsAdapter;
 import com.example.instagram.R;
@@ -33,6 +34,8 @@ public class FeedFragment extends Fragment {
     protected PostsAdapter postsAdapter;
     protected List<Post> posts;
     private SwipeRefreshLayout swipeContainer;
+    private EndlessRecyclerViewScrollListener scrollListener;
+
 
     public FeedFragment() {
         // Required empty public constructor
@@ -59,7 +62,47 @@ public class FeedFragment extends Fragment {
         // set the adapter on the recycler view
         postsRecyclerView.setAdapter(postsAdapter);
         // set the layout manager on the recycler view
-        postsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        postsRecyclerView.setLayoutManager(linearLayoutManager);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // specify what type of data we want to query - Post.class
+                ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+                // include data referred by user key
+                query.include(Post.USER_KEY);
+                // limit query to latest 20 items
+                query.setSkip(totalItemsCount * page + 20);
+                // order posts by creation date (newest first)
+                query.addDescendingOrder("createdAt");
+
+                // start an asynchronous call for posts
+                query.findInBackground(new FindCallback<Post>() {
+                    @Override
+                    public void done(List<Post> postsFound, ParseException e) {
+                        // check for errors
+                        if (e != null) {
+                            Log.e(TAG, "Issue with getting posts", e);
+                            return;
+                        }
+
+                        // for debugging purposes let's print every post description to logcat
+                        for (Post post : posts) {
+                            System.out.println("post");
+                            Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
+                        }
+
+                        // save received posts to list and notify adapter of new data
+                        posts.addAll(postsFound);
+                        postsAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        postsRecyclerView.addOnScrollListener(scrollListener);
+
         // query posts from Parstagram
         queryPosts();
 

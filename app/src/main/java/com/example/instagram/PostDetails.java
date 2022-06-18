@@ -68,6 +68,7 @@ public class PostDetails extends AppCompatActivity {
                     .into(contentImageView);
         }
 
+
         ParseFile profilePhoto = ParseUser.getCurrentUser().getParseFile("profilePhoto");
         if (image != null) {
             int radius = 100;

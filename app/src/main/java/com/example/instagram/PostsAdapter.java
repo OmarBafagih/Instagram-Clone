@@ -150,7 +150,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 likeCountTextView.setText(Integer.toString(likes.length()));
                 for(int i = 0; i < likes.length(); i++){
                     try {
-                        if(likes.getString(i).equals(post.getUser().getObjectId())){
+                        if(likes.getString(i).equals(ParseUser.getCurrentUser().getObjectId())){
                             likeImageView.setSelected(true);
                         }
                     } catch (JSONException e) {
@@ -228,7 +228,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
             }
             else{
-                System.out.println("Profile Fragment or Post Fragment");
                 ParseFile image = post.getImage();
                 if (image != null) {
                     int radius = 50;
@@ -258,6 +257,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 likeImageView.setVisibility(View.GONE);
                 commentsImageView.setVisibility(View.GONE);
                 commentsTextView.setVisibility(View.GONE);
+                likeCountTextView.setVisibility(View.GONE);
 
 
 
